@@ -22,13 +22,10 @@ function UserTable() {
 
   const filterUsers = () => {
     const filtered = users.filter((user) => {
-      const matchesName =
-        user.firstname.toLowerCase().includes(searchText.toLowerCase()) ||
-        user.lastname.toLowerCase().includes(searchText.toLowerCase());
+      const fullName = user.firstname + " " + user.lastname;
+      const matchesName = fullName.toLowerCase().includes(searchText.toLowerCase());
       const matchesCity = selectedCity === "" || user.city === selectedCity;
-      const matchesGender =
-        selectedGender === "" || user.gender === selectedGender;
-
+      const matchesGender = selectedGender === "" || user.gender === selectedGender;
       return matchesName && matchesCity && matchesGender;
     });
     setFilteredUsers(filtered);
@@ -36,9 +33,14 @@ function UserTable() {
 
   const getAge = (dateOfBirth) => {
     const dob = new Date(dateOfBirth);
-    const diffMs = Date.now() - dob.getTime();
-    const ageDt = new Date(diffMs);
-    return Math.abs(ageDt.getUTCFullYear() - 1970);
+    const today = new Date();
+    let years = today.getFullYear() - dob.getFullYear();
+    let months = today.getMonth() - dob.getMonth();
+    if (months < 0) {
+      years--;
+      months += 12;
+    }
+    return `${years} yrs ${months} mns`;
   };
 
   return (
